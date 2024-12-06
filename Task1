@@ -1,0 +1,76 @@
+"""
+    Assess the strength of a given password.
+
+    Args:
+        password (str): The password to assess.
+
+    Returns:
+        dict: A dictionary containing the password strength score and feedback.
+    """
+import re
+
+def assess_password_strength(password):
+   
+   # Initialize password strength score and feedback
+    score = 0
+    feedback = []
+
+    # Check password length
+    if len(password) < 8:
+        feedback.append("Password is too short. It should be at least 8 characters.")
+    else:
+        score += 1
+
+    # Check password complexity (uppercase, lowercase, digits, special characters)
+    if re.search(r"[A-Z]", password):
+        score += 1
+    else:
+        feedback.append("Password should contain at least one uppercase letter.")
+
+    if re.search(r"[a-z]", password):
+        score += 1
+    else:
+        feedback.append("Password should contain at least one lowercase letter.")
+
+    if re.search(r"[0-9]", password):
+        score += 1
+    else:
+        feedback.append("Password should contain at least one digit.")
+
+    if re.search(r"[!@#$%^&*()_+=-{};:'<>,./?]", password):
+        score += 1
+    else:
+        feedback.append("Password should contain at least one special character.")
+
+    # Check password uniqueness (for simplicity, we'll assume a password is unique if it doesn't contain common patterns)
+    common_patterns = ["qwerty", "123456", "password", "snapit"]
+    if any(pattern in password.lower() for pattern in common_patterns):
+        feedback.append("Password contains a common pattern and is not unique.")
+    else:
+        score += 1
+
+    # Calculate password strength score (out of 6)
+    password_strength = score / 6 * 100
+
+    # Provide feedback based on password strength score
+    if password_strength < 34:
+        feedback.append("Password strength: Very Weak")
+    elif password_strength < 67:
+        feedback.append("Password strength: Weak")
+    elif password_strength < 84:
+        feedback.append("Password strength: Fair")
+    else:
+        feedback.append("Password strength: Strong")
+
+    return {
+        "score": password_strength,
+        "feedback": feedback
+    }
+
+# Example usage
+password = input("Enter a password: ")
+assessment = assess_password_strength(password)
+
+print("Password Strength Score:", assessment["score"])
+for feedback in assessment["feedback"]:
+    print(feedback)
